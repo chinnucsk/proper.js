@@ -11,6 +11,9 @@ function FORALL(names, props) {
         FORALL: [names, props]
     };
 }
+function FUN(fun) {
+    return {fun: {fun: fun}};
+};
 
 function pos_integer() {
     return {pos_integer: []};
@@ -24,17 +27,20 @@ function props(hash) {
     return props;
 };
 
+function func() {
+    return function() {return 2};
+};
+
 var Proper = {
     props: {
         // contrived extra pos_integer property even though it itself is a
         // propery
         pos_integer: function() {
             return FORALL([pos_integer()],
-                function(n) {
+                FUN(function(n) {
                     return n > 0
-                }
+                })
             );
         }
     }
 };
-

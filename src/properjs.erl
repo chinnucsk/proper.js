@@ -19,14 +19,34 @@ main(_) ->
 
   {ok, Props} = js:eval(JS, <<"props(Proper.props)">>),
 
-  lists:foreach(fun(Prop) -> prop(Prop, JS) end, Props).
+  lists:foreach(fun(Prop) -> prop(JS, <<"Proper">>, Prop) end, Props).
 
 priv_dir() ->
   "/Users/steve/src/mokele/proper.js/priv".
 
+prop(JS, Module, PropName) ->
+  NS0 = <<Module/binary, ".props">>,
+  {ok, Prop} = js:call(JS, <<NS0/binary, ".", PropName/binary>>, []),
+  io:format("~s() ->~n", [PropName]),
 
-prop(PropName, JS) ->
-  {ok, Prop} = js:call(JS, <<"Proper.props.", PropName/binary>>, []),
+  NS = <<NS0/binary, ".", PropName/binary, "()">>,
+  prop1(JS, Module, NS, Prop),
 
-  io:format("Prop ~p~n", [Prop]),
+  io:format(".~n"),
   ok.
+
+
+prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
+  % {A, B, C, D...}
+  io:format("  ?FORALL({~p},~n", [Props]),
+
+  NS = <<NS0/binary, ".FORALL[1]">>,
+  {ok, Prop} = js:eval(JS, NS),
+  prop1(JS, Module, NS, Prop);
+
+prop1(_, _, _NS, {struct, [{<<"fun">>, _}]}) ->
+  io:format("    begin~n"),
+  io:format("~n"),
+  io:format("    end~n");
+prop1(_JS, Module, NS, Prop) ->
+  io:format("Prop ~p ~p ~p~n", [Module, NS, Prop]).
