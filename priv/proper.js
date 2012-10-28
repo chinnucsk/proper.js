@@ -5,3 +5,36 @@ var helloworld = function() {
 var fun2 = function(n) {
     return n*2;
 };
+
+function FORALL(names, props) {
+    return {
+        FORALL: [names, props]
+    };
+}
+
+function pos_integer() {
+    return {pos_integer: []};
+}
+
+function props(hash) {
+    var props = [];
+    for(k in hash) {
+        props.push(k);
+    }
+    return props;
+};
+
+var Proper = {
+    props: {
+        // contrived extra pos_integer property even though it itself is a
+        // propery
+        pos_integer: function() {
+            return FORALL([pos_integer()],
+                function(n) {
+                    return n > 0
+                }
+            );
+        }
+    }
+};
+

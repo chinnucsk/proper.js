@@ -10,25 +10,23 @@ main(_) ->
 
   {ok, JS} = js_driver:new(),
 
-  js:define(JS, <<"var addOne = function(a){ return a + 1; }">>),
-
   FileName = filename:join([priv_dir(), "proper.js"]),
   io:format("FileName ~p~n", [FileName]),
-  {ok, Binary} = file:read_file(FileName),
 
+  {ok, Binary} = file:read_file(FileName),
   R = js:define(JS, Binary),
   io:format("R: ~p~n", [R]),
 
-  {ok, Hello} = js:call(JS, <<"helloworld">>, []),
-  io:format("helloworld: ~s", [Hello]),
+  {ok, Props} = js:eval(JS, <<"props(Proper.props)">>),
 
-  {ok, Doubled} = js:call(JS, <<"fun2">>, [9]),
-  io:format("Doubled: ~p~n", [Doubled]),
-
-  {ok, N} = js:call(JS, <<"addOne">>, [3]),
-
-  io:format("Hello World! ~p~n", [N]),
-  ok.
+  lists:foreach(fun(Prop) -> prop(Prop, JS) end, Props).
 
 priv_dir() ->
   "/Users/steve/src/mokele/proper.js/priv".
+
+
+prop(PropName, JS) ->
+  {ok, Prop} = js:call(JS, <<"Proper.props.", PropName/binary>>, []),
+
+  io:format("Prop ~p~n", [Prop]),
+  ok.
