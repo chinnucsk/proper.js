@@ -107,6 +107,7 @@ Proper.props = {
         );
     },
     string_reverse: function() {
+        // todo: fix failing on [[0,1,1,0]]
         return FORALL([string()],
             function(charlist) {
                 var s = String.fromCharCodes(charlist);

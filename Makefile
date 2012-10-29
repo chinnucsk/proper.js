@@ -1,6 +1,12 @@
+.PHONY: deps
+
+all: deps compile
+
+deps:
+	./rebar get-deps
 
 compile:
 	./rebar compile
 
-escriptize:
-	./rebar escriptize
+test:
+	./properjs.sh

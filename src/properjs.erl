@@ -3,44 +3,45 @@
 -include_lib("proper/include/proper.hrl").
 
 -export([
+    start/0,
     main/1
   ]).
 
-main(_) ->
+start() ->
   ok = erlang_js:start(),
-  ok = application:start(properjs),
+  ok = application:start(properjs).
+
+main(_) ->
+  start(),
 
   {ok, JS} = js_driver:new(),
 
   FileName = filename:join([priv_dir(), "proper.js"]),
 
   {ok, Binary} = file:read_file(FileName),
-  R = js:define(JS, Binary),
-  io:format("R: ~p~n", [R]),
+  ok = js:define(JS, Binary),
 
   {ok, Props} = js:eval(JS, <<"PROPS(Proper.props)">>),
 
   lists:foreach(fun(Prop) -> prop(JS, <<"Proper">>, Prop) end, Props).
 
 priv_dir() ->
-  "/Users/steve/src/mokele/proper.js/priv".
+  %% Hacky workaround to handle running from a standard app directory
+  %% and .ez package
+  case code:priv_dir(properjs) of
+    {error, bad_name} ->
+      filename:join([filename:dirname(code:which(?MODULE)), "..", "priv"]);
+    Dir ->
+      Dir
+  end.
 
 prop(JS, Module, PropName) ->
   NS = <<Module/binary, ".props.", PropName/binary, "()">>,
 
   {ok, Prop} = js:eval(JS, NS),
 
-  io:format("Prop: ~s()~n", [PropName]),
-  proper:quickcheck(prop1(JS, Module, NS, Prop)),
-
-  ok.
-
-% require function registry and an opaque reference for them
-% and always eval a function on that to return the ref from erlang
-
-% generator for variables in js (function() { return generatorServer(name) })()
-% after each attempt generatorServer is told to move to the next register
-% FUN(function(){}) saves the function in the js and returns a reference to it
+  io:format("property ~s~n", [NS]),
+  proper:quickcheck(prop1(JS, Module, NS, Prop)).
 
 prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
   PropsList = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props),
@@ -51,7 +52,7 @@ prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
         ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
         {ok, Prop} = js:call(JS, F, Args),
         Prop
-        %prop1(JS, Module, NS, Prop),
+        % todo: nested FORALL(..., ..., FORALL(....)
     end
   );
 
@@ -64,7 +65,6 @@ prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props, _]}]}) ->
         ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
         {ok, Prop} = js:call(JS, F, Args),
         Prop
-        %prop1(JS, Module, NS, Prop),
     end
   );
 
