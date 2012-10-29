@@ -11,19 +11,41 @@ start() ->
   ok = erlang_js:start(),
   ok = application:start(properjs).
 
-main(_) ->
+main(L) ->
   start(),
 
-  {ok, JS} = js_driver:new(),
-
   FileName = filename:join([priv_dir(), "proper.js"]),
+  {ok, ProperBinary} = file:read_file(FileName),
 
-  {ok, Binary} = file:read_file(FileName),
-  ok = js:define(JS, Binary),
+  {ok, JS} = js_driver:new(),
+  js:define(JS, ProperBinary),
+  {file, ObjectsToTest0} =
+    lists:foldl(
+      fun
+        (<<"0">>, {object, Acc}) ->
+          {file, Acc};
+        (ObjectName, {object, Acc}) ->
+          {file, [list_to_binary(ObjectName)|Acc]};
+        (UserFileName, {file, Acc}) ->
+          {ok, UserFileBinary} = file:read_file(UserFileName),
+          ok = js:define(JS, UserFileBinary),
+          {object, Acc}
+      end,
+      {file, []}, L
+    ),
+  ObjectsToTest =
+    case ObjectsToTest0 of
+      [] -> [<<"Proper">>];
+      _ -> lists:reverse(ObjectsToTest0)
+    end,
 
-  {ok, Props} = js:eval(JS, <<"PROPS(Proper.props)">>),
-
-  lists:foreach(fun(Prop) -> prop(JS, <<"Proper">>, Prop) end, Props).
+  lists:foreach(
+    fun(ObjectName) ->
+        {ok, Props} = js:eval(JS, <<"PROPS(", ObjectName/binary, ".props)">>),
+        lists:foreach(fun(Prop) -> prop(JS, ObjectName, Prop) end, Props)
+    end,
+    ObjectsToTest
+  ).
 
 priv_dir() ->
   %% Hacky workaround to handle running from a standard app directory

@@ -9,4 +9,4 @@ compile:
 	./rebar compile
 
 test:
-	./properjs.sh
+	./properjs
