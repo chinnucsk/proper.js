@@ -15,12 +15,10 @@ main(_) ->
   {ok, JS} = js_driver:new(),
 
   FileName = filename:join([priv_dir(), "proper.js"]),
-  io:format("FileName ~p~n", [FileName]),
 
   {ok, Binary} = file:read_file(FileName),
   R = js:define(JS, Binary),
   io:format("R: ~p~n", [R]),
-
 
   {ok, Props} = js:eval(JS, <<"PROPS(Proper.props)">>),
 
@@ -32,7 +30,6 @@ priv_dir() ->
 prop(JS, Module, PropName) ->
   NS = <<Module/binary, ".props.", PropName/binary, "()">>,
 
-  io:format("NS ~p~n", [NS]),
   {ok, Prop} = js:eval(JS, NS),
 
   proper:quickcheck(prop1(JS, Module, NS, Prop)),
@@ -53,21 +50,40 @@ a_prop() ->
 prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
   % {A, B, C, D...}
   % {fun() -> ... end, ...}
-  io:format("Hello~n", []),
-  ?FORALL(Tuple, {pos_integer()},
+  PropsList = props_list(JS, Module, <<"todo: ns">>, Props),
+  ?FORALL(Args, PropsList,
     begin
-        %N > 0
         NS = <<NS0/binary, ".FORALL[1]">>,
         F = <<"$f">>,
         ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
-        {ok, Prop} = js:call(JS, F, tuple_to_list(Tuple)),
+        {ok, Prop} = js:call(JS, F, Args),
         Prop
         %prop1(JS, Module, NS, Prop),
     end
   );
-prop1(_, _, NS, {struct, [{<<"fun">>, _}]}) ->
-  io:format("    begin~n"),
-  io:format("      properjs:call(~p)~n", [NS]),
-  io:format("    end~n");
-prop1(_JS, Module, NS, Prop) ->
-  io:format("Prop ~p ~p ~p~n", [Module, NS, Prop]).
+
+prop1(_, _, _, {struct, [{<<"neg_integer">>, []}]}) ->
+  neg_integer();
+prop1(_, _, _, {struct, [{<<"pos_integer">>, []}]}) ->
+  pos_integer();
+prop1(_, _, _, {struct, [{<<"non_neg_integer">>, []}]}) ->
+  non_neg_integer();
+prop1(_, _, _, {struct, [{<<"integer">>, []}]}) ->
+  integer();
+prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
+  integer(A, B);
+prop1(_, _, _, {struct, [{Key, Args}]}) ->
+  % property function catchall
+  Atom = binary_to_atom(Key, utf8),
+  apply(Atom, Args);
+prop1(_JS, _Module, _NS, Prop) ->
+  Prop.
+
+props_list(JS, Module, NS, Props) ->
+  io:format("Props ~p~n", [Props]),
+  lists:map(
+    fun(Prop) ->
+        prop1(JS, Module, NS, Prop)
+    end,
+    Props
+  ).

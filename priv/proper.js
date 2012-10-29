@@ -25,6 +25,12 @@ function FUN(fun) {
 function pos_integer() {
     return {pos_integer: []};
 }
+function neg_integer() {
+    return {neg_integer: []};
+}
+function non_neg_integer() {
+    return {non_neg_integer: []};
+}
 
 function PROPS(hash) {
     var props = [];
@@ -45,8 +51,22 @@ Proper.props = {
     // propery
     pos_integer: function() {
         return FORALL([pos_integer()],
-            function(n) {
-                return n > 0
+            function(i) {
+                return i > 0
+            }
+        );
+    },
+    neg_integer: function() {
+        return FORALL([neg_integer()],
+            function(i) {
+                return i < 0
+            }
+        );
+    },
+    non_neg_integer: function() {
+        return FORALL([non_neg_integer()],
+            function(i) {
+                return i >= 0
             }
         );
     }
