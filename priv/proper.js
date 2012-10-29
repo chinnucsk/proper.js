@@ -1,18 +1,16 @@
-var helloworld = function() {
-    return "Hello World From proper.js!\n";
-};
-
 var log = function(s) {
     ejsLog("/tmp/erlang_js.txt", s);
 }
 
-var fun2 = function(f) {
-    return f();
-};
-
-function FORALL(names, props) {
+function FORALL(arg_props, f) {
     return {
-        FORALL: [names, props]
+        FORALL: [arg_props, f]
+    };
+}
+
+function LET(arg_props, f) {
+    return {
+        LET: [arg_props, f]
     };
 }
 
@@ -24,11 +22,11 @@ var FUNS = (function() {
 
 function reverse(s) {
     return s.reverse();
-};
+}
 
 function FUN(fun) {
     return {fun: {fun: fun}};
-};
+}
 
 function string() {
     return {string: []};
@@ -56,15 +54,21 @@ function PROPS(hash) {
         props.push(k);
     }
     return props;
-};
+}
 
 function func() {
     return function() {return 2};
-};
+}
 
 function double(i) {
-    return i * 2;
-};
+}
+function even_number() {
+    return LET([integer()],
+        function(i) {
+            return i * 2;
+        }
+    );
+}
 
 String.prototype.reverse = function() {
     return this.split("").reverse().join("");
@@ -90,7 +94,11 @@ Proper.props = {
     string_fromCharCode: function() {
         return FORALL([string()],
             function(charlist) {
-                var converted = String.fromCharCodes(charlist).toCharCodes();
+                var s = String.fromCharCodes(charlist);
+                if(typeof s != 'string') {
+                    return false;
+                }
+                var converted = s.toCharCodes();
                 for(var i=0; i<charlist.length; i++) {
                     if(charlist[i] != converted[i]) {
                         return false;
@@ -113,10 +121,10 @@ Proper.props = {
             }
         );
     },
-    double_always_even: function() {
-        return FORALL([integer()],
+    even_number: function() {
+        return FORALL([even_number()],
             function(i) {
-                return double(i) % 2 == 0;
+                return i % 2 == 0;
             }
         );
     },

@@ -18,9 +18,6 @@ main(_) ->
   R = js:define(JS, Binary),
   io:format("R: ~p~n", [R]),
 
-  Reversed = js:call(JS, <<"reverse">>, [<<"hellö">>]),
-  io:format("Reversed ~p~n", [Reversed]),
-
   {ok, Props} = js:eval(JS, <<"PROPS(Proper.props)">>),
 
   lists:foreach(fun(Prop) -> prop(JS, <<"Proper">>, Prop) end, Props).
@@ -46,12 +43,23 @@ prop(JS, Module, PropName) ->
 % FUN(function(){}) saves the function in the js and returns a reference to it
 
 prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
-  % {A, B, C, D...}
-  % {fun() -> ... end, ...}
-  PropsList = props_list(JS, Module, <<"todo: ns">>, Props),
+  PropsList = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props),
   ?FORALL(Args, PropsList,
     begin
         NS = <<NS0/binary, ".FORALL[1]">>,
+        F = <<"$f">>,
+        ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
+        {ok, Prop} = js:call(JS, F, Args),
+        Prop
+        %prop1(JS, Module, NS, Prop),
+    end
+  );
+
+prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props, _]}]}) ->
+  PropsList = props_list(JS, Module, <<NS0/binary, ".LET[0]">>, Props),
+  ?LET(Args, PropsList,
+    begin
+        NS = <<NS0/binary, ".LET[1]">>,
         F = <<"$f">>,
         ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
         {ok, Prop} = js:call(JS, F, Args),
@@ -80,11 +88,15 @@ prop1(_, _, _, {struct, [{Key, Args}]}) ->
 prop1(_JS, _Module, _NS, Prop) ->
   Prop.
 
-props_list(JS, Module, NS, Props) ->
-  io:format("  ~p~n", [Props]),
-  lists:map(
-    fun(Prop) ->
-        prop1(JS, Module, NS, Prop)
-    end,
-    Props
+props_list(JS, Module, NS0, Props) ->
+  lists:reverse(
+    lists:foldl(
+      fun(Prop, L) ->
+          I = length(L),
+          NS = iolist_to_binary([NS0, $[, integer_to_list(I), $]]),
+          [prop1(JS, Module, NS, Prop)|L]
+      end,
+      [],
+      Props
+    )
   ).
