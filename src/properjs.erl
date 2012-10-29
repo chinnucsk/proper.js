@@ -18,6 +18,9 @@ main(_) ->
   R = js:define(JS, Binary),
   io:format("R: ~p~n", [R]),
 
+  Reversed = js:call(JS, <<"reverse">>, [<<"hellö">>]),
+  io:format("Reversed ~p~n", [Reversed]),
+
   {ok, Props} = js:eval(JS, <<"PROPS(Proper.props)">>),
 
   lists:foreach(fun(Prop) -> prop(JS, <<"Proper">>, Prop) end, Props).
@@ -67,6 +70,9 @@ prop1(_, _, _, {struct, [{<<"integer">>, []}]}) ->
   integer();
 prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
   integer(A, B);
+prop1(_, _, _, {struct, [{<<"string">>, []}]}) ->
+  string();
+
 prop1(_, _, _, {struct, [{Key, Args}]}) ->
   % property function catchall
   Atom = binary_to_atom(Key, utf8),
