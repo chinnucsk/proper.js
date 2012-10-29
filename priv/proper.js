@@ -2,6 +2,14 @@ var log = function(s) {
     ejsLog("/tmp/erlang_js.txt", s);
 }
 
+function PROPS(hash) {
+    var props = [];
+    for(k in hash) {
+        props.push(k);
+    }
+    return props;
+}
+
 function FORALL(arg_props, f) {
     return {
         FORALL: [arg_props, f]
@@ -12,20 +20,6 @@ function LET(arg_props, f) {
     return {
         LET: [arg_props, f]
     };
-}
-
-var FUNS = (function() {
-    return {
-
-    };
-})();
-
-function reverse(s) {
-    return s.reverse();
-}
-
-function FUN(fun) {
-    return {fun: {fun: fun}};
 }
 
 function string() {
@@ -48,18 +42,6 @@ function integer() {
     return {integer: l};
 }
 
-function PROPS(hash) {
-    var props = [];
-    for(k in hash) {
-        props.push(k);
-    }
-    return props;
-}
-
-function func() {
-    return function() {return 2};
-}
-
 function even_number() {
     return LET([integer()],
         function(i) {
@@ -78,6 +60,7 @@ String.fromCharCodes = function(a) {
     }
     return s;
 };
+
 String.prototype.toCharCodes = function() {
     var a = [];
     for(var i=0; i<this.length; i++) {
