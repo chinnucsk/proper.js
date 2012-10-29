@@ -60,8 +60,6 @@ function func() {
     return function() {return 2};
 }
 
-function double(i) {
-}
 function even_number() {
     return LET([integer()],
         function(i) {
