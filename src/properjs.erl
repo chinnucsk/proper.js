@@ -6,8 +6,6 @@
     main/1
   ]).
 
--compile(export_all).
-
 main(_) ->
   ok = erlang_js:start(),
   ok = application:start(properjs),
@@ -32,13 +30,10 @@ prop(JS, Module, PropName) ->
 
   {ok, Prop} = js:eval(JS, NS),
 
+  io:format("Prop: ~s()~n", [PropName]),
   proper:quickcheck(prop1(JS, Module, NS, Prop)),
 
   ok.
-
-a_prop() ->
-  io:format("a_prop()~n", []),
-  true.
 
 % require function registry and an opaque reference for them
 % and always eval a function on that to return the ref from erlang
@@ -80,7 +75,7 @@ prop1(_JS, _Module, _NS, Prop) ->
   Prop.
 
 props_list(JS, Module, NS, Props) ->
-  io:format("Props ~p~n", [Props]),
+  io:format("  ~p~n", [Props]),
   lists:map(
     fun(Prop) ->
         prop1(JS, Module, NS, Prop)

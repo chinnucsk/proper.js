@@ -31,6 +31,13 @@ function neg_integer() {
 function non_neg_integer() {
     return {non_neg_integer: []};
 }
+function integer() {
+    var l = [];
+    for(var k in arguments) {
+        l.push(arguments[k]);
+    };
+    return {integer: l};
+}
 
 function PROPS(hash) {
     var props = [];
@@ -44,11 +51,20 @@ function func() {
     return function() {return 2};
 };
 
+function double(i) {
+    return i * 2;
+};
+
 var Proper = {};
 
 Proper.props = {
-    // contrived extra pos_integer property even though it itself is a
-    // propery
+    double_always_even: function() {
+        return FORALL([integer()],
+            function(i) {
+                return double(i) % 2 == 0;
+            }
+        );
+    },
     pos_integer: function() {
         return FORALL([pos_integer()],
             function(i) {
