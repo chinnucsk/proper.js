@@ -73,8 +73,7 @@ prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
         F = <<"$f">>,
         ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
         {ok, Prop} = js:call(JS, F, Args),
-        Prop
-        % todo: nested FORALL(..., ..., FORALL(....)
+        prop1(JS, Module, <<NS/binary, "()">>, Prop)
     end
   );
 
@@ -87,6 +86,7 @@ prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props, _]}]}) ->
         ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
         {ok, Prop} = js:call(JS, F, Args),
         Prop
+        %prop1(JS, Module, <<NS/binary, "()">>, Prop)
     end
   );
 

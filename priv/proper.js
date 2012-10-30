@@ -61,10 +61,37 @@ function even_number() {
         }
     );
 }
+function odd_number() {
+    // todo: support LET([even_number()]...
+    return LET([integer()],
+        function(i) {
+            return i*2 - 1;
+        }
+    );
+}
+
+function boolean() {
+    return oneof(true, false);
+}
+function odd_or_even(b) {
+    return b ? odd_number() : even_number();
+}
 
 var Proper = {};
 
 Proper.props = {
+    forall_forall: function() {
+        // todo: write less contrived nested FORALL property
+        return FORALL([boolean()],
+            function(b) {
+                return FORALL([odd_or_even(b)],
+                    function(i) {
+                        return i % 2 == (b ? 1 : 0);
+                    }
+                );
+            }
+        );
+    },
     oneof: function() {
         return FORALL([oneof(true, false)],
             function(n) {
