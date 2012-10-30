@@ -110,6 +110,8 @@ prop1(_, _, _, {struct, [{Key, Args}]}) ->
 prop1(_JS, _Module, _NS, Prop) ->
   Prop.
 
+% todo: this needs to follow the full tree of child elements
+% so custom types can be used
 props_list(JS, Module, NS0, Props) ->
   lists:reverse(
     lists:foldl(

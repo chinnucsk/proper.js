@@ -19,12 +19,29 @@ Array.seq = function(from, to) {
     return a;
 }
 
+function min_max_pos_integer_pair() {
+    return LET([pos_integer(), pos_integer()],
+        function(n1, n2) {
+            var min = Math.min(n1, n2);
+            var max = Math.max(n1, n2);
+            return [min, max];
+        }
+    );
+};
+
 Array.props = {
+    min_max_pos_integer_pair: function() {
+        return FORALL([min_max_pos_integer_pair()],
+            function(pair) {
+                return pair[0] <= pair[1];
+            }
+        );
+    },
     remove: function() {
-        return FORALL([pos_integer(), pos_integer()],
-            function(n1, n2) {
-                var size = Math.max(n1, n2);
-                var n = Math.min(n1, n2);
+        return FORALL([min_max_pos_integer_pair()],
+            function(pair) {
+                var n = pair[0];
+                var size = pair[1];
                 var seq = Array.seq(1, size);
                 var length = seq.length;
                 seq.remove(n);
