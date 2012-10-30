@@ -104,6 +104,10 @@ prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props, _]}]}) ->
     end
   );
 
+prop1(JS, Module, NS0, {struct, [{<<"list">>, [Prop]}]}) ->
+  ChildProp = prop1(JS, Module, <<NS0/binary, ".list[0]">>, Prop),
+  list(ChildProp);
+
 prop1(_, _, _, {struct, [{<<"neg_integer">>, []}]}) ->
   neg_integer();
 prop1(_, _, _, {struct, [{<<"pos_integer">>, []}]}) ->
@@ -116,6 +120,8 @@ prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
   integer(A, B);
 prop1(_, _, _, {struct, [{<<"string">>, []}]}) ->
   string();
+prop1(_, _, _, {struct, [{<<"list">>, []}]}) ->
+  list();
 
 prop1(JS, Module, NS, {struct, [{<<"oneof">>, Props}]}) ->
   Choices = props_list(JS, Module, <<NS/binary, ".oneof">>, Props),

@@ -34,6 +34,19 @@ function oneof() {
     return {oneof: a};
 }
 
+function list() {
+    // todo: rename $list to not confuse with a actual object
+    // with this property. This requires everything to change
+    // e.g. $FORALL, $oneof, etc, etc or $.FORALL etc
+    var a = [];
+    for(var i=0; i<arguments.length; i++) {
+        a.push(arguments[i]);
+    };
+    return {
+        list: a
+    };
+}
+
 function string() {
     return {string: []};
 }
@@ -157,6 +170,18 @@ var Proper = (function() {
                             return Math.abs(i % 2) == (b ? 1 : 0);
                         }
                     );
+                }
+            );
+        },
+        list: function() {
+            return FORALL([list(integer())],
+                function(list) {
+                    for(var i=0; i<list.length; i++) {
+                        if(typeof list[i] != 'number') {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
             );
         },
