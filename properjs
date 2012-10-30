@@ -1,4 +1,13 @@
 #!/bin/bash
-#erl -pa ebin/ deps/*/ebin -noshell -eval 'properjs:main([])' -s erlang halt
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+SOURCE="${BASH_SOURCE[0]}"
+DIR="$( dirname "$SOURCE" )"
+while [ -h "$SOURCE" ]
+do 
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+  DIR="$( cd -P "$( dirname "$SOURCE"  )" && pwd )"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
 ERL_LIBS="$DIR/ebin;$DIR/deps/erlang_js/ebin" $DIR/properjs.escript "$@"
