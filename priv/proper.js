@@ -104,8 +104,12 @@ var Proper = (function() {
         return {
             greeting: "Hello World!",
             id: pos_integer(),
+            listoftype: [type, type, type],
             type: type
         };
+    };
+    var my_list_type = function(type) {
+        return [type, type, type, type];
     };
 
     Proper.props = {
@@ -164,7 +168,25 @@ var Proper = (function() {
                             return my_object.greeting == "Hello World!"
                                 && typeof my_object.id == 'number'
                                 && my_object.id > 0
-                                && typeof my_object.type == typeof type;
+                                && typeof my_object.type == typeof type
+                                && typeof my_object.listoftype[0] == typeof type
+                                && typeof my_object.listoftype[1] == typeof type
+                                && typeof my_object.listoftype[2] == typeof type;
+
+                        }
+                    );
+                }
+            );
+        },
+        my_list_type: function() {
+            return FORALL([oneof(pos_integer(), boolean())],
+                function(type) {
+                    return FORALL([my_list_type(type)],
+                        function(my_list) {
+                            return typeof my_list[0] == typeof type
+                                && typeof my_list[1] == typeof type
+                                && typeof my_list[2] == typeof type
+                                && typeof my_list[3] == typeof type;
                         }
                     );
                 }
