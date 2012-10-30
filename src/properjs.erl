@@ -22,7 +22,7 @@ main(L) ->
   {file, ObjectsToTest0} =
     lists:foldl(
       fun
-        (<<"0">>, {object, Acc}) ->
+        ("0", {object, Acc}) ->
           {file, Acc};
         (ObjectName, {object, Acc}) ->
           {file, [list_to_binary(ObjectName)|Acc]};
