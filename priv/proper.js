@@ -99,53 +99,76 @@ var Proper = (function() {
     };
 })();
 
+(function() {
+    var my_object_type = function(type) {
+        return {
+            greeting: "Hello World!",
+            id: pos_integer(),
+            type: type
+        };
+    };
 
-Proper.props = {
-    forall_forall: function() {
-        // todo: write less contrived nested FORALL property
-        return FORALL([boolean()],
-            function(b) {
-                return FORALL([odd_or_even(b)],
-                    function(i) {
-                        return Math.abs(i % 2) == (b ? 1 : 0);
-                    }
-                );
-            }
-        );
-    },
-    oneof: function() {
-        return FORALL([oneof(true, false)],
-            function(n) {
-                return n === true || n === false;
-            }
-        )
-    },
-    even_number: function() {
-        return FORALL([even_number()],
-            function(i) {
-                return i % 2 == 0;
-            }
-        );
-    },
-    pos_integer: function() {
-        return FORALL([pos_integer()],
-            function(i) {
-                return i > 0
-            }
-        );
-    },
-    neg_integer: function() {
-        return FORALL([neg_integer()],
-            function(i) {
-                return i < 0
-            }
-        );
-    },
-    non_neg_integer: function() {
-        return FORALL([non_neg_integer()],
-            function(i) {
-                return i >= 0
-            }
-        );
-    }
-};
+    Proper.props = {
+        oneof: function() {
+            return FORALL([oneof(true, false)],
+                function(n) {
+                    return n === true || n === false;
+                }
+            )
+        },
+        even_number: function() {
+            return FORALL([even_number()],
+                function(i) {
+                    return i % 2 == 0;
+                }
+            );
+        },
+        pos_integer: function() {
+            return FORALL([pos_integer()],
+                function(i) {
+                    return i > 0
+                }
+            );
+        },
+        neg_integer: function() {
+            return FORALL([neg_integer()],
+                function(i) {
+                    return i < 0
+                }
+            );
+        },
+        non_neg_integer: function() {
+            return FORALL([non_neg_integer()],
+                function(i) {
+                    return i >= 0
+                }
+            );
+        },
+        forall_forall: function() {
+            // todo: write less contrived nested FORALL property
+            return FORALL([boolean()],
+                function(b) {
+                    return FORALL([odd_or_even(b)],
+                        function(i) {
+                            return Math.abs(i % 2) == (b ? 1 : 0);
+                        }
+                    );
+                }
+            );
+        },
+        my_object_type: function() {
+            return FORALL([oneof(pos_integer(), boolean())],
+                function(type) {
+                    return FORALL([my_object_type(type)],
+                        function(my_object) {
+                            return my_object.greeting == "Hello World!"
+                                && typeof my_object.id == 'number'
+                                && my_object.id > 0
+                                && typeof my_object.type == typeof type;
+                        }
+                    );
+                }
+            );
+        }
+    };
+})();

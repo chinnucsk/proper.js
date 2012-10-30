@@ -121,6 +121,22 @@ prop1(JS, Module, NS, {struct, [{<<"oneof">>, Props}]}) ->
   Choices = props_list(JS, Module, <<NS/binary, ".oneof">>, Props),
   oneof(Choices);
 
+prop1(JS, Module, NS0, {struct, Props}) ->
+  {struct, 
+    lists:reverse(
+      lists:foldl(
+        fun
+          ({K, V}, L) ->
+            NS = <<NS0/binary, "['", K/binary, "']">>,
+            [{K, prop1(JS, Module, NS, V)}|L];
+          (P, L) ->
+            [P|L]
+        end,
+        [],
+        Props
+      )
+    )
+  };
 prop1(_JS, _Module, _NS, Prop) ->
   Prop.
 
