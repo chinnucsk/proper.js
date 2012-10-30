@@ -62,8 +62,7 @@ function even_number() {
     );
 }
 function odd_number() {
-    // todo: support LET([even_number()]...
-    return LET([integer()],
+    return LET([even_number()],
         function(i) {
             return i*2 - 1;
         }
@@ -77,7 +76,29 @@ function odd_or_even(b) {
     return b ? odd_number() : even_number();
 }
 
-var Proper = {};
+var Proper = (function() {
+    var returnValues = [];
+    return {
+        reset: function() {
+            returnValues = [];
+        },
+        call: function() {
+            var f = eval(arguments[0]);
+            var a = [];
+            for(var i=1; i<arguments.length; i++) {
+                a.push(arguments[i]);
+            }
+            var index = returnValues.length;
+            var value = f.apply(this, a);
+            returnValues.push(value);
+            return [index, value];
+        },
+        value: function(index) {
+            return returnValues[index];
+        }
+    };
+})();
+
 
 Proper.props = {
     forall_forall: function() {
@@ -86,7 +107,7 @@ Proper.props = {
             function(b) {
                 return FORALL([odd_or_even(b)],
                     function(i) {
-                        return i % 2 == (b ? 1 : 0);
+                        return Math.abs(i % 2) == (b ? 1 : 0);
                     }
                 );
             }

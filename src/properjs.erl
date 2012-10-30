@@ -69,11 +69,10 @@ prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
   PropsList = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props),
   ?FORALL(Args, PropsList,
     begin
-        NS = <<NS0/binary, ".FORALL[1]">>,
-        F = <<"$f">>,
-        ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
-        {ok, Prop} = js:call(JS, F, Args),
-        prop1(JS, Module, <<NS/binary, "()">>, Prop)
+        F = <<NS0/binary, ".FORALL[1]">>,
+        {ok, [Index, Prop]} = js:call(JS, <<"Proper.call">>, [F|Args]),
+        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
+        prop1(JS, Module, NS, Prop)
     end
   );
 
