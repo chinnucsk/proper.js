@@ -24,7 +24,7 @@ function min_max_pos_integer_pair() {
         function(n1, n2) {
             var min = Math.min(n1, n2);
             var max = Math.max(n1, n2);
-            return [min, max];
+            return {min: min, max: max};
         }
     );
 };
@@ -33,15 +33,15 @@ Array.props = {
     min_max_pos_integer_pair: function() {
         return FORALL([min_max_pos_integer_pair()],
             function(pair) {
-                return pair[0] <= pair[1];
+                return pair.min <= pair.max;
             }
         );
     },
     remove: function() {
         return FORALL([min_max_pos_integer_pair()],
             function(pair) {
-                var n = pair[0];
-                var size = pair[1];
+                var n = pair.min;
+                var size = pair.max;
                 var seq = Array.seq(1, size);
                 var length = seq.length;
                 seq.remove(n);
