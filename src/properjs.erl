@@ -103,6 +103,10 @@ prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
 prop1(_, _, _, {struct, [{<<"string">>, []}]}) ->
   string();
 
+prop1(JS, Module, NS, {struct, [{<<"oneof">>, Props}]}) ->
+  Choices = props_list(JS, Module, <<NS/binary, ".oneof">>, Props),
+  oneof(Choices);
+
 prop1(_, _, _, {struct, [{Key, Args}]}) ->
   % property function catchall
   Atom = binary_to_atom(Key, utf8),

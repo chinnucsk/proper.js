@@ -22,6 +22,18 @@ function LET(arg_props, f) {
     };
 }
 
+function oneof() {
+    var args = arguments;
+    if(args.length == 1) {
+        args = args[0];
+    }
+    var a = [];
+    for(var i=0; i<args.length; i++) {
+        a.push(args[i]);
+    };
+    return {oneof: a};
+}
+
 function string() {
     return {string: []};
 }
@@ -35,11 +47,11 @@ function non_neg_integer() {
     return {non_neg_integer: []};
 }
 function integer() {
-    var l = [];
-    for(var k in arguments) {
-        l.push(arguments[k]);
+    var a = [];
+    for(var i=0; i<arguments.length; i++) {
+        a.push(arguments[i]);
     };
-    return {integer: l};
+    return {integer: a};
 }
 
 function even_number() {
@@ -53,6 +65,13 @@ function even_number() {
 var Proper = {};
 
 Proper.props = {
+    oneof: function() {
+        return FORALL([oneof(true, false)],
+            function(n) {
+                return n === true || n === false;
+            }
+        )
+    },
     even_number: function() {
         return FORALL([even_number()],
             function(i) {
