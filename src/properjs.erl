@@ -39,13 +39,28 @@ main(L) ->
       _ -> lists:reverse(ObjectsToTest0)
     end,
 
-  lists:foreach(
-    fun(ObjectName) ->
-        {ok, Props} = js:eval(JS, <<"PROPS(", ObjectName/binary, ".props)">>),
-        lists:foreach(fun(Prop) -> prop(JS, ObjectName, Prop) end, Props)
-    end,
-    ObjectsToTest
-  ).
+  Success =
+    lists:foldl(
+      fun(ObjectName, FoldSuccess0) ->
+          {ok, Props} = js:eval(JS, <<"PROPS(", ObjectName/binary, ".props)">>),
+          lists:foldl(
+            fun(Prop, FoldSuccess1) ->
+                Success0 = prop(JS, ObjectName, Prop),
+                if
+                  not FoldSuccess1 -> false;
+                  true -> Success0
+                end
+            end,
+            FoldSuccess0,
+            Props)
+      end,
+      true,
+      ObjectsToTest
+    ),
+    halt(exitcode(Success)).
+
+exitcode(true) -> 0;
+exitcode(false) -> 1.
 
 priv_dir() ->
   %% Hacky workaround to handle running from a standard app directory
