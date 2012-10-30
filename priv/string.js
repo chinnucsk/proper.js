@@ -36,16 +36,10 @@ String.props = {
         );
     },
     string_reverse: function() {
-        // todo: fix failing on [[0,1,1,0]]
         return FORALL([string()],
             function(charlist) {
                 var s = String.fromCharCodes(charlist);
-                var reversed = s.reverse();
-                var half = s.length / 2;
-                var left = s.substring(0, Math.floor(half));
-                var right = s.substring(Math.ceil(half));
-                var symetric = left == right;
-                return (symetric && reversed == s) || (reversed != s && reversed.reverse() == s);
+                return s.reverse().reverse() == s;
             }
         );
     }
