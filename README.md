@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/mokele/proper.js.png)](http://travis-ci.org/mokele/proper.js)
+
 This is currently just a proof of concept and only tests a set of
 contrived properties in priv/*.js
 
