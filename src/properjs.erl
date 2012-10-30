@@ -95,12 +95,10 @@ prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props, _]}]}) ->
   PropsList = props_list(JS, Module, <<NS0/binary, ".LET[0]">>, Props),
   ?LET(Args, PropsList,
     begin
-        NS = <<NS0/binary, ".LET[1]">>,
-        F = <<"$f">>,
-        ok = js:define(JS, <<"var ", F/binary, " = ", NS/binary>>),
-        {ok, Prop} = js:call(JS, F, Args),
-        Prop
-        %prop1(JS, Module, <<NS/binary, "()">>, Prop)
+        F = <<NS0/binary, ".LET[1]">>,
+        {ok, [Index, Prop]} = js:call(JS, <<"Proper.call">>, [F|Args]),
+        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
+        prop1(JS, Module, NS, Prop)
     end
   );
 
@@ -121,6 +119,7 @@ prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
 prop1(_, _, _, {struct, [{<<"string">>, []}]}) ->
   string();
 prop1(_, _, _, {struct, [{<<"list">>, []}]}) ->
+  % todo: list(js_supported_type())
   list();
 
 prop1(JS, Module, NS, {struct, [{<<"oneof">>, Props}]}) ->

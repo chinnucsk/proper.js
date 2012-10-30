@@ -173,6 +173,37 @@ var Proper = (function() {
                 }
             );
         },
+        let_let: function() {
+            var my_nested_let = function() {
+                // create an array of integers but the first
+                // element is 1 larger than the rest which are 
+                // all the same.
+                return LET([pos_integer()],
+                    function(i) {
+                        return LET([list(i)],
+                            function(a) {
+                                a.push(i);// force it to have 2 items
+                                a.push(i);
+                                var shift = a.shift();
+                                a.unshift(shift+1);
+                                return a;
+                            }
+                        );
+                    }
+                );
+            };
+            return FORALL([my_nested_let()],
+                function(a) {
+                    var first = a[0];
+                    for(var i=1; i<a.length; i++) {
+                        if(first != a[i] + 1) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            );
+        },
         list: function() {
             return FORALL([list(integer())],
                 function(list) {
