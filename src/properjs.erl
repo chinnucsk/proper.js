@@ -142,6 +142,9 @@ prop1(JS, Module, NS0, {struct, Props}) ->
       )
     )
   };
+
+prop1(JS, Module, NS, Props) when is_list(Props) ->
+  props_list(JS, Module, NS, Props);
 prop1(_JS, _Module, _NS, Prop) ->
   Prop.
 
