@@ -107,7 +107,7 @@ Proper.props = {
             function(b) {
                 return FORALL([odd_or_even(b)],
                     function(i) {
-                        return Math.abs(i % 2) == (b ? 1 : 0);
+                        return Math.abs(i % 2) == (b ? 0 : 1);
                     }
                 );
             }
