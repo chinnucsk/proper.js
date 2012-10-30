@@ -1,5 +1,5 @@
 This is currently just a proof of concept and only tests a set of
-contrived properties in priv/proper.js
+contrived properties in priv/*.js
 
     make
 
