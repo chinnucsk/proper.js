@@ -72,13 +72,18 @@ priv_dir() ->
       Dir
   end.
 
+js_on_output("~w~n", [Data]) ->
+  io:format("~s~n", [js_mochijson2:encode(Data)]);
+js_on_output(Format, Data) ->
+  io:format(Format, Data).
+
 prop(JS, Module, PropName) ->
   NS = <<Module/binary, ".props.", PropName/binary, "()">>,
 
   {ok, Prop} = js:eval(JS, NS),
 
   io:format("property ~s~n", [NS]),
-  proper:quickcheck(prop1(JS, Module, NS, Prop)).
+  proper:quickcheck(prop1(JS, Module, NS, Prop), [{on_output, fun js_on_output/2}]).
 
 prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
   PropsList = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props),
