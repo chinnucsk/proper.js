@@ -8,6 +8,12 @@ deps:
 compile:
 	./rebar compile
 
+compile_eqc:
+	./rebar compile -DEQC
+
+cleanebin:
+	rm -f ebin/*.beam
+
 test:
 	./properjs \
 		priv/proper.js Proper \
