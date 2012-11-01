@@ -61,12 +61,10 @@ priv_dir() ->
       Dir
   end.
 
--ifndef(EQC).
-js_on_output("~w~n", [Data]) ->
+js_on_output(Format, [Data]) when Format =:= "~w~n"; Format =:= "~p~n" ->
   io:format("~s~n", [js_mochijson2:encode(Data)]);
 js_on_output(Format, Data) ->
   io:format(Format, Data).
--endif.
 
 prop(JS, Module, PropName) ->
   NS = <<Module/binary, ".props.", PropName/binary, "()">>,
@@ -78,7 +76,7 @@ prop(JS, Module, PropName) ->
 
 -ifdef(EQC).
 qc(JS, Module, NS, Prop) ->
-  eqc:quickcheck(prop1(JS, Module, NS, Prop)).
+  eqc:quickcheck(on_output(fun js_on_output/2, prop1(JS, Module, NS, Prop))).
 -else.
 qc(JS, Module, NS, Prop) ->
   proper:quickcheck(prop1(JS, Module, NS, Prop), [{on_output, fun js_on_output/2}]).
