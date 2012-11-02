@@ -74,12 +74,19 @@ prop(JS, Module, PropName) ->
   io:format("property ~s~n", [NS]),
   qc(JS, Module, NS, Prop).
 
+num_tests() ->
+  case application:get_env(properjs, num_tests) of
+    {ok, N} -> N;
+    _ -> 100
+  end.
+
 -ifdef(EQC).
 qc(JS, Module, NS, Prop) ->
   eqc:quickcheck(on_output(fun js_on_output/2, prop1(JS, Module, NS, Prop))).
 -else.
 qc(JS, Module, NS, Prop) ->
-  proper:quickcheck(prop1(JS, Module, NS, Prop), [{on_output, fun js_on_output/2}]).
+  Opts = [{on_output, fun js_on_output/2},num_tests()],
+  proper:quickcheck(prop1(JS, Module, NS, Prop), Opts).
 -endif.
 
 prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->

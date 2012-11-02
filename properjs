@@ -10,4 +10,4 @@ do
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-ERL_LIBS="$DIR/ebin;$DIR/deps/erlang_js/ebin" $DIR/properjs.escript "$@"
+ERL_AFLAGS="$ERL_AFLAGS" ERL_LIBS="$DIR/ebin;$DIR/deps/erlang_js/ebin" $DIR/properjs.escript "$@"
