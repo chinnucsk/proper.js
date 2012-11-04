@@ -1,16 +1,18 @@
+# Property testing in Javascript
+
 [![Build Status](https://secure.travis-ci.org/mokele/proper.js.png)](http://travis-ci.org/mokele/proper.js)
 
-# Make
+## Make
 
     make
 
-# Test
+## Test
 
 Runs the tests in priv/*.js
 
     make test
 
-# Running
+## Running
 
 Then you can try running the properjs command in the properjs repository:
 
@@ -24,11 +26,31 @@ and `0` denotes a source file without any properties defined
 By default running properjs with no arguments runs the Proper.prop
 properties.
 
-To run the string tests in priv/string.js run:
+## Example
 
-    ./properjs priv/string.js String
+Given that reversing a reversed string should always be the same, we can
+write a test that asserts this behaviour.
+`string.js`
+```javascript
+String.prototype.reverse = function() {
+    return this.split("").reverse().join("");
+};
+String.props = {
+    reverse: function() {
+        return FORALL(string(),
+            function(s) {
+                return s.reverse().reverse() == s;
+            }
+        );
+    }
+};
+```
 
-# Supported Types/Generators/Properties
+Then run it with:
+
+    ./properjs string.js String
+
+## Supported Types/Generators/Properties
 
 ### `FORALL(type(), type(), ..., function(v1, v2, ...) { return boolean() })`
 
