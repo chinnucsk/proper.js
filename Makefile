@@ -16,6 +16,7 @@ cleanebin:
 
 install:
 	mkdir -p $(PREFIX)
+	find deps -name .git | xargs rm -rf
 	cp -r ebin deps properjs* priv $(PREFIX)
 	mkdir -p $(PREFIX)/bin
 	(cd $(PREFIX)/bin && ln -fs ../properjs pjs)
