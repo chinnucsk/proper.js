@@ -14,6 +14,9 @@ compile_eqc:
 cleanebin:
 	rm -f ebin/*.beam
 
+install:
+	ln -s `pwd`/properjs $(PREFIX)/bin/pjs
+
 test:
 	./properjs \
 		priv/proper.js Proper \
