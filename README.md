@@ -115,5 +115,5 @@ function board_size() {
  * `string()`
  * `boolean()` `true` or `false`
  * `string()`
- * list(type()) generates a list of its argument
- * char_code()
+ * `list(type())` generates a list of its argument
+ * `char_code()`
