@@ -15,7 +15,7 @@ cleanebin:
 	rm -f ebin/*.beam
 
 install:
-	ln -s `pwd`/properjs $(PREFIX)/bin/pjs
+	ln -fs `pwd`/properjs $(PREFIX)/bin/pjs
 
 test:
 	./properjs \
