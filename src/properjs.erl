@@ -146,6 +146,8 @@ prop1(_, _, _, {struct, [{<<"integer">>, []}]}) ->
   integer();
 prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
   integer(A, B);
+prop1(_, _, _, {struct, [{<<"char_code">>, []}]}) ->
+  char();
 prop1(_, _, _, {struct, [{<<"string">>, []}]}) ->
   string();
 %prop1(_, _, _, {struct, [{<<"list">>, []}]}) ->
@@ -196,10 +198,13 @@ props_list(JS, Module, NS0, Props) ->
 js(L) ->
   FileName = filename:join([priv_dir(), "proper.js"]),
   {ok, ProperBinary} = file:read_file(FileName),
+  StringFileName = filename:join([priv_dir(), "string.js"]),
+  {ok, StringBinary} = file:read_file(StringFileName),
 
   Pid = spawn(fun() ->
       {ok, JS} = js_driver:new(),
       js:define(JS, ProperBinary),
+      js:define(JS, StringBinary),
       {file, _} =
         lists:foldl(
           fun

@@ -107,7 +107,10 @@ function list() {
 }
 
 function string() {
-    return {string: []};
+    return LET(list(char_code()), String.fromCharCodes);
+}
+function char_code() {
+    return {char_code: []};
 }
 function pos_integer() {
     return {pos_integer: []};
