@@ -15,7 +15,10 @@ cleanebin:
 	rm -f ebin/*.beam
 
 install:
-	ln -fs `pwd`/properjs $(PREFIX)/bin/pjs
+	mkdir -p $(PREFIX)
+	rsync -r --exclude=.git ebin deps properjs* priv $(PREFIX)
+	mkdir -p $(PREFIX)/bin
+	(cd $(PREFIX)/bin && ln -fs ../properjs pjs)
 
 test:
 	./properjs \
