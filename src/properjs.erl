@@ -89,9 +89,30 @@ qc(JS, Module, NS, Prop) ->
   proper:quickcheck(prop1(JS, Module, NS, Prop), Opts).
 -endif.
 
-prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
-  PropsList = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props),
-  ?FORALL(Args, PropsList,
+prop1(JS, Module, NS0, {struct, [{<<"SUCHTHAT">>, [Props0, _]}]}) ->
+  Props = prop1(JS, Module, <<NS0/binary, ".SUCHTHAT[0]">>, Props0),
+  ?SUCHTHAT(Args, Props,
+    begin
+        F = <<NS0/binary, ".SUCHTHAT[1]">>,
+        {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F,Args]),
+        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
+        prop1(JS, Module, NS, Prop)
+    end
+  );
+prop1(JS, Module, NS0, {struct, [{<<"SUCHTHATMAYBE">>, [Props0, _]}]}) ->
+  Props = prop1(JS, Module, <<NS0/binary, ".SUCHTHATMAYBE[0]">>, Props0),
+  ?SUCHTHATMAYBE(Args, Props,
+    begin
+        F = <<NS0/binary, ".SUCHTHATMAYBE[1]">>,
+        {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F,Args]),
+        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
+        prop1(JS, Module, NS, Prop)
+    end
+  );
+
+prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props0, _]}]}) ->
+  Props = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props0),
+  ?FORALL(Args, Props,
     begin
         F = <<NS0/binary, ".FORALL[1]">>,
         {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F|Args]),
@@ -100,9 +121,9 @@ prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props, _]}]}) ->
     end
   );
 
-prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props, _]}]}) ->
-  PropsList = props_list(JS, Module, <<NS0/binary, ".LET[0]">>, Props),
-  ?LET(Args, PropsList,
+prop1(JS, Module, NS0, {struct, [{<<"LET">>, [Props0, _]}]}) ->
+  Props = props_list(JS, Module, <<NS0/binary, ".LET[0]">>, Props0),
+  ?LET(Args, Props,
     begin
         F = <<NS0/binary, ".LET[1]">>,
         {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F|Args]),

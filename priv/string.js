@@ -19,7 +19,7 @@ String.prototype.toCharCodes = function() {
 
 String.props = {
     string_fromCharCode: function() {
-        return FORALL([string()],
+        return FORALL(string(),
             function(charlist) {
                 var s = String.fromCharCodes(charlist);
                 if(typeof s != 'string') {
@@ -36,7 +36,7 @@ String.props = {
         );
     },
     string_reverse: function() {
-        return FORALL([string()],
+        return FORALL(string(),
             function(charlist) {
                 var s = String.fromCharCodes(charlist);
                 return s.reverse().reverse() == s;
