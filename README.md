@@ -30,8 +30,9 @@ properties.
 
 Given that reversing a reversed string should always be the same, we can
 write a test that asserts this behaviour.
-`string.js`
+
 ```javascript
+// string.js
 String.prototype.reverse = function() {
     return this.split("").reverse().join("");
 };
@@ -93,16 +94,17 @@ There is a hard limit on the number of suchthat attempts that is not yet
 configurable via javascript.
 
 ```javascript
-MyObject.props = {
-    even_number_prop: function() {
-        return SUCHTHAT(even_number(),
-            function(i) {
-                return i % 2 == 0;
-            }
-        );
-    }
+function even_number() {
+    return SUCHTHAT(integer(),
+        function(i) {
+            return i % 2 == 0;
+        }
+    );
 }
 ```
+
+The example of `even_number()` using a LET is prefered over this example
+since it does not throw away any generated values.
 
 ### `SUCHTHATMAYBE(type(), function(v) { return boolean() })`
 
