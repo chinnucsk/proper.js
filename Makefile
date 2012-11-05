@@ -3,13 +3,13 @@
 all: deps compile
 
 deps:
-	./test/rebar get-deps
+	./rebar get-deps
 
 compile:
-	./test/rebar compile
+	./rebar compile
 
 compile_eqc:
-	./test/rebar compile -DEQC
+	./rebar compile -DEQC
 
 cleanebin:
 	rm -f ebin/*.beam
