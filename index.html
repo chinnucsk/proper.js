@@ -162,7 +162,7 @@
     reverse: <span class="kw">function</span>() {
         <span class="kw">return</span> <span class="proper">FORALL(</span>string(),
             <span class="kw">function</span>(s) {
-                <span class="kw">return</span> s.reverse().reverse() == s;
+                assert.equal(s, s.reverse().reverse());;
             }<span class="proper">)</span>;
     }
 };</pre>
