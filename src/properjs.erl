@@ -214,6 +214,8 @@ js(L) ->
   {ok, ProperBinary} = file:read_file(FileName),
   StringFileName = filename:join([priv_dir(), "string.js"]),
   {ok, StringBinary} = file:read_file(StringFileName),
+  io:format("Deps ~p~n", [lib_dir(deps)]),
+  io:format("Deps ~p~n", [filelib:wildcard(lib_dir(deps)++"/*")]),
   AssertFileName = filename:join([lib_dir(deps), "assert.js", "assert.js"]),
   {ok, AssertBinary} = file:read_file(AssertFileName),
 
