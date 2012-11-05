@@ -51,6 +51,14 @@ Then run it with:
 
     ./properjs string.js String
 
+## Compiling to use Quviq QuickCheck
+
+By default PropEr is used, but to compile to use your system's Quviq QuickCheck
+installation compile with:
+
+    make cleanebin compile_eqc
+
+
 ## Supported Types/Generators/Properties
 
 ### `FORALL(type(), type(), ..., function(v1, v2, ...) { return boolean() })`
