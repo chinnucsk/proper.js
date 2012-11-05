@@ -1,5 +1,6 @@
 language: erlang
-script: "make all test"
+install: make all
+script: test
 notifications:
   recipients:
     - steve@mokele.co.uk
