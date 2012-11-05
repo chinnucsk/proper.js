@@ -1,6 +1,0 @@
-cd /usr/local/ && \
-  git clone https://github.com/mokele/proper.js pjs && \
-  (cd pjs && \
-    make && \
-    ln -s /usr/local/pjs/properjs /usr/local/bin/pjs \
-  )

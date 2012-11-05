@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+  <head>
+    <title>proper.js property-based testing for your javascript</title>
+    <meta http-equiv="content-language" content="en" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+    body {
+        font: 14px helvetica,arial,freesans,clean,sans-serif;
+    }
+    p {
+        line-height: 1.4;
+    }
+    .desc p {
+        margin-top: 0;
+    }
+    .js {
+        font-weight: normal;
+    }
+    hgroup, table {
+        margin: 0 auto;
+        width: 700px;
+    }
+    h1, .shell, pre {
+        font-family: Consolas, "Droid Sans Mono", Monaco, Courier, monospace;
+    }
+    h2 {
+        font-weight: normal;
+    }
+    h3 {
+        margin: 1.5em 0.8em 0.4em 0.4em;
+    }
+    hgroup {
+        text-align: center;
+    }
+    hr {
+        border: 0;
+        border-top: 1px dashed #aaa;
+        width: 300px;
+        margin: 1em auto;
+    }
+    table td {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 50%;
+        vertical-align: top;
+    }
+    td.desc {
+        background: #eee;
+    }
+    td.shell {
+    }
+    td.desc, td.shell {
+        padding: 0.8em;
+    }
+    .shell, pre {
+        font-size: 10px;
+        background: #444;
+        color: white;
+    }
+    pre {
+        padding: 0;
+        margin: 0;
+    }
+    .shell ol,
+    .shell li {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .dollar {
+        color: #0f0;
+    }
+    .shell pre .kw {
+        color: lightblue;
+    }
+    .shell pre .class {
+        color: #0f0;
+    }
+    .shell pre .proper {
+        color: pink;
+    }
+    </style>
+  </head>
+  <body>
+
+  <hgroup>
+    <h1>proper<span class=".js">.js</span></h1>
+    <h2>property-based testing for your javascript</h2>
+  </hgroup>
+
+  <table>
+    <tbody>
+      <tr>
+        <td colspan="2"><h3>Install</h3></td>
+      </tr>
+      <tr>
+        <td class="desc">via Homebrew</td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span> brew install \
+            <br />
+            https://raw.github.com/mokele/homebrew/pjs/Library/Formula/pjs.rb</li>
+          </ol>
+        </td>
+      </tr>
+      <tr><td colspan="2"><hr /></td></tr>
+      <tr>
+        <td class="desc">Through a oneliner</td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span>
+            curl https://raw.github.com/mokele/proper.js/go | sh
+          </ol>
+        </td>
+      </tr>
+      <tr><td colspan="2"><hr /></td></tr>
+      <tr>
+        <td class="desc">Manually</td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span> git clone https://github.com/mokele/proper.js</li>
+            <li><span class="dollar">$</span> cd proper.js</li>
+            <li><span class="dollar">$</span> make</li>
+            <li><span class="dollar">$</span> PREFIX=/usr/local/pjs make install</li>
+            <li><span class="dollar">$</span> ln -s /usr/local/pjs/bin/pjs /usr/local/bin/pjs</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><h3>Getting Started</h3></td>
+      </tr>
+      <tr>
+        <td class="desc">
+          <p>Given that there is no built in string reverse function, lets write one.</p>
+          <p>Because the results of reversing a reversed string is the original string, we can assert
+          that exact property for reversing all strings.</p>
+          <p>A list of supported generators is in the
+          <a href="https://github.com/mokele/proper.js#supported-typesgeneratorsproperties">README</a>. Have fun!</p>
+        </td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span> cat string.js
+            <pre><span class="class">String</span>.<span class="kw">prototype</span>.reverse = <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="kw">this</span>.split("").reverse().join("");
+};
+<span class="class">String</span>.props = {
+    reverse: <span class="kw">function</span>() {
+        <span class="kw">return</span> <span class="proper">FORALL(</span>string(),
+            <span class="kw">function</span>(s) {
+                <span class="kw">return</span> s.reverse().reverse() == s;
+            }<span class="proper">)</span>;
+    }
+};</pre>
+            <br />
+            <span class="dollar">$</span> pjs string.js String
+            <br />
+            property String.props.reverse()
+            <br />
+            ..................................................
+            <br />
+            ..................................................
+            <br />
+            OK: Passed 100 test(s).
+            </li>
+          </ol>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  </body>
+</html>
