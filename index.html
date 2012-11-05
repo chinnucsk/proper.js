@@ -95,10 +95,23 @@
         <td colspan="2"><h3>Install</h3></td>
       </tr>
       <tr>
-        <td class="desc">via Homebrew</td>
+        <td class="desc">via Homebrew compiled to use <a href="https://github.com/manopapad/proper">PropEr</a></td>
         <td class="shell">
           <ol>
             <li><span class="dollar">$</span> brew install \
+            <br />
+            https://raw.github.com/mokele/homebrew/pjs/Library/Formula/pjs.rb</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="desc">
+          via Homebrew compiled to use <a href="http://www.quviq.com/">QuviQ QuickCheck</a>.
+          <em>Requires that eqc is in erlang's path already.</em>
+        </td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span> brew install --with-eqc \
             <br />
             https://raw.github.com/mokele/homebrew/pjs/Library/Formula/pjs.rb</li>
           </ol>
