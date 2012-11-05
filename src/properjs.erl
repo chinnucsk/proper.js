@@ -115,9 +115,18 @@ prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props0, _]}]}) ->
   ?FORALL(Args, Props,
     begin
         F = <<NS0/binary, ".FORALL[1]">>,
-        {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F|Args]),
-        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
-        prop1(JS, Module, NS, Prop)
+        case js_call(JS, <<"Proper.call">>, [F|Args]) of
+          {ok, [Index, Prop]} ->
+            NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
+            case Prop of
+              null -> true;
+              _ ->
+                prop1(JS, Module, NS, Prop)
+            end;
+          {error, L} ->
+            js_on_output("~p~n", [{struct, L}]),
+            false
+        end
     end
   );
 
@@ -202,11 +211,14 @@ js(L) ->
   {ok, ProperBinary} = file:read_file(FileName),
   StringFileName = filename:join([priv_dir(), "string.js"]),
   {ok, StringBinary} = file:read_file(StringFileName),
+  AssertFileName = filename:join(["deps", "assert.js", "assert.js"]),
+  {ok, AssertBinary} = file:read_file(AssertFileName),
 
   Pid = spawn(fun() ->
       {ok, JS} = js_driver:new(),
       js:define(JS, ProperBinary),
       js:define(JS, StringBinary),
+      js:define(JS, AssertBinary),
       {file, _} =
         lists:foldl(
           fun

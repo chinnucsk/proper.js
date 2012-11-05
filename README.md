@@ -40,7 +40,7 @@ String.props = {
     reverse: function() {
         return FORALL(string(),
             function(s) {
-                return s.reverse().reverse() == s;
+                assert.equal(s, s.reverse().reverse());
             }
         );
     }
@@ -61,18 +61,20 @@ installation compile with:
 
 ## Supported Types/Generators/Properties
 
-### `FORALL(type(), type(), ..., function(v1, v2, ...) { return $boolean() })`
+### `FORALL(type(), type(), ..., function(v1, v2, ...) { return $boolean() | undefined })`
 
 Each argument to `FORALL` before the last function argument is a
 generator for a type that will then be passed to your function.
-Needs to return `true` on success and `false` on test failure.
+Needs to return `true` or undefined on success and `false` on test
+failure.
 
 ```javascript
 var myprop = FORALL(integer(), integer(), integer(),
     function(one, two, three) {
-      return typeof one == 'number'
-          && typeof two == 'number'
-          && typeof three == 'number';
+        assert.equal(typeof one, 'number');
+        assert.equal(typeof two, 'number');
+        assert.equal(typeof three, 'number');
+        return true; // optional due to being synonymous with undefined
     }
 );
 ```

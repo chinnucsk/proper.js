@@ -175,35 +175,35 @@ Proper.props = {
     oneof: function() {
         return FORALL(oneof(true, false),
             function(n) {
-                return n === true || n === false;
+                assert.ok(n === true || n === false);
             }
         )
     },
     even_number: function() {
         return FORALL(even_number(),
             function(i) {
-                return i % 2 == 0;
+                assert.equal(i % 2, 0);
             }
         );
     },
     pos_integer: function() {
         return FORALL(pos_integer(),
             function(i) {
-                return i > 0
+                assert.ok(i > 0);
             }
         );
     },
     neg_integer: function() {
         return FORALL(neg_integer(),
             function(i) {
-                return i < 0
+                assert.ok(i < 0);
             }
         );
     },
     non_neg_integer: function() {
         return FORALL(non_neg_integer(),
             function(i) {
-                return i >= 0
+                assert.ok(i >= 0)
             }
         );
     },
@@ -214,7 +214,8 @@ Proper.props = {
                 var max = Math.min(i1, i2);
                 return FORALL(integer(min, max),
                     function(i) {
-                        return i >= min && i <= max;
+                        assert.ok(i >= min);
+                        assert.ok(i <= max);
                     }
                 );
             }
@@ -223,7 +224,7 @@ Proper.props = {
     float_1: function() {
         return FORALL($float(),
             function(f) {
-                return typeof f == 'number';
+                assert.equal(typeof f, 'number');
             }
         );
     },
@@ -234,7 +235,8 @@ Proper.props = {
                 var max = Math.min(f1, f2);
                 return FORALL($float(min, max),
                     function(f) {
-                        return f >= min && f <= max;
+                        assert.ok(f >= min);
+                        assert.ok(f <= max);
                     }
                 );
             }
@@ -249,7 +251,7 @@ Proper.props = {
             function(b) {
                 return FORALL(odd_or_even(b),
                     function(i) {
-                        return Math.abs(i % 2) == (b ? 1 : 0);
+                        assert.ok(Math.abs(i % 2) == (b ? 1 : 0));
                     }
                 );
             }
@@ -278,11 +280,8 @@ Proper.props = {
             function(a) {
                 var first = a[0];
                 for(var i=1; i<a.length; i++) {
-                    if(first != a[i] + 1) {
-                        return false;
-                    }
+                    assert.equal(first, a[i] + 1);
                 }
-                return true;
             }
         );
     },
@@ -290,11 +289,8 @@ Proper.props = {
         return FORALL(array(integer()),
             function(list) {
                 for(var i=0; i<list.length; i++) {
-                    if(typeof list[i] != 'number') {
-                        return false;
-                    }
+                    assert.equal(typeof list[i], 'number');
                 }
-                return true;
             }
         );
     },
@@ -311,13 +307,13 @@ Proper.props = {
             function(type) {
                 return FORALL(my_object_type(type),
                     function(my_object) {
-                        return my_object.greeting == "Hello World!"
-                            && typeof my_object.id == 'number'
-                            && my_object.id > 0
-                            && typeof my_object.type == typeof type
-                            && typeof my_object.listoftype[0] == typeof type
-                            && typeof my_object.listoftype[1] == typeof type
-                            && typeof my_object.listoftype[2] == typeof type;
+                        assert.equal(my_object.greeting, "Hello World!");
+                        assert.equal(typeof my_object.id, 'number');
+                        assert.ok(my_object.id > 0);
+                        assert.equal(typeof my_object.type, typeof type);
+                        assert.equal(typeof my_object.listoftype[0], typeof type);
+                        assert.equal(typeof my_object.listoftype[1], typeof type);
+                        assert.equal(typeof my_object.listoftype[2], typeof type);
 
                     }
                 );
@@ -332,10 +328,10 @@ Proper.props = {
             function(type) {
                 return FORALL(my_list_type(type),
                     function(my_list) {
-                        return typeof my_list[0] == typeof type
-                            && typeof my_list[1] == typeof type
-                            && typeof my_list[2] == typeof type
-                            && typeof my_list[3] == typeof type;
+                        assert.equal(typeof my_list[0], typeof type);
+                        assert.equal(typeof my_list[1], typeof type);
+                        assert.equal(typeof my_list[2], typeof type);
+                        assert.equal(typeof my_list[3], typeof type);
                     }
                 );
             }
@@ -351,7 +347,8 @@ Proper.props = {
         };
         return FORALL(suchthattype(),
             function(i) {
-                return i > 0 && typeof i == 'number';
+                assert.ok(i > 0, "i is always positive");
+                assert.equal(typeof i, 'number');
             }
          );
     }

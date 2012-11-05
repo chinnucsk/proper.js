@@ -33,7 +33,7 @@ Array.props = {
     min_max_pos_integer_pair: function() {
         return FORALL(min_max_pos_integer_pair(),
             function(pair) {
-                return pair.min <= pair.max;
+                assert.ok(pair.min <= pair.max);
             }
         );
     },
@@ -45,7 +45,8 @@ Array.props = {
                 var seq = Array.seq(1, size);
                 var length = seq.length;
                 seq.remove(n);
-                return seq.indexOf(n) == -1 && seq.length == length - 1;
+                assert.equal(seq.indexOf(n), -1);
+                assert.equal(seq.length, length - 1);
             }
         )
     }

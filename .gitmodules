@@ -1,0 +1,3 @@
+[submodule "deps/assert.js"]
+	path = deps/assert.js
+	url = https://github.com/Jxck/assert.git

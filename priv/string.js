@@ -22,30 +22,26 @@ String.props = {
         return FORALL(array(char_code()),
             function(charlist) {
                 var s = String.fromCharCodes(charlist);
-                if(typeof s != 'string') {
-                    return false;
-                }
+                //assert.equal(typeof s, 'string');
                 var converted = s.toCharCodes();
                 for(var i=0; i<charlist.length; i++) {
-                    if(charlist[i] != converted[i]) {
-                        return false;
-                    }
+                    assert.equal(charlist[i], converted[i]);
                 }
-                return charlist.length == converted.length;
+                assert.equal(charlist.length, converted.length);
             }
         );
     },
     string: function() {
         return FORALL(string(),
             function(s) {
-                return typeof s == 'string';
+                assert.equal(typeof s, 'string');
             }
         );
     },
     string_reverse: function() {
         return FORALL(string(),
             function(s) {
-                return s.reverse().reverse() == s;
+                assert.equal(s.reverse().reverse(), s);
             }
         );
     }
