@@ -3,7 +3,6 @@
 all: deps compile
 
 deps:
-	git submodule update --init
 	./rebar get-deps
 
 compile:
