@@ -29,7 +29,7 @@ main(L) ->
   Success =
     lists:foldl(
       fun(ObjectName, FoldSuccess0) ->
-          {ok, Props} = js_eval(JS, <<"PROPS(", ObjectName/binary, ".props)">>),
+          {ok, Props} = js_eval(JS, <<"Proper.PROPS(", ObjectName/binary, ".props)">>),
           lists:foldl(
             fun(Prop, FoldSuccess1) ->
                 {ok, JS0, _} = js(L),
@@ -146,6 +146,10 @@ prop1(_, _, _, {struct, [{<<"integer">>, []}]}) ->
   integer();
 prop1(_, _, _, {struct, [{<<"integer">>, [A, B]}]}) ->
   integer(A, B);
+prop1(_, _, _, {struct, [{<<"float">>, []}]}) ->
+  float();
+prop1(_, _, _, {struct, [{<<"float">>, [A, B]}]}) ->
+  float(A, B);
 prop1(_, _, _, {struct, [{<<"char_code">>, []}]}) ->
   char();
 prop1(_, _, _, {struct, [{<<"string">>, []}]}) ->
@@ -180,8 +184,6 @@ prop1(JS, Module, NS, Props) when is_list(Props) ->
 prop1(_JS, _Module, _NS, Prop) ->
   Prop.
 
-% todo: this needs to follow the full tree of child elements
-% so custom types can be used
 props_list(JS, Module, NS0, Props) ->
   lists:reverse(
     lists:foldl(

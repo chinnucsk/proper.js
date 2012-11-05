@@ -19,7 +19,7 @@ String.prototype.toCharCodes = function() {
 
 String.props = {
     string_fromCharCode: function() {
-        return FORALL(list(char_code()),
+        return FORALL(array(char_code()),
             function(charlist) {
                 var s = String.fromCharCodes(charlist);
                 if(typeof s != 'string') {
