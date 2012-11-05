@@ -51,9 +51,9 @@ Then run it with:
 
     ./properjs string.js String
 
-## Compiling to use Quviq QuickCheck
+## Compiling to use QuviQ QuickCheck
 
-By default PropEr is used, but to compile to use your system's Quviq QuickCheck
+By default PropEr is used, but to compile to use your system's QuviQ QuickCheck
 installation compile with:
 
     make cleanebin compile_eqc
