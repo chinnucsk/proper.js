@@ -40,11 +40,11 @@ function clone(obj) {
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-function SUCHTHATMAYBE(arg_props, f) {
-    return {
-        SUCHTHATMAYBE: [arg_props, f]
-    };
-}
+//function SUCHTHATMAYBE(arg_props, f) {
+//    return {
+//        SUCHTHATMAYBE: [arg_props, f]
+//    };
+//}
 function SUCHTHAT(arg_props, f) {
     return {
         SUCHTHAT: [arg_props, f]
@@ -354,19 +354,19 @@ Proper.props = {
                 return i > 0 && typeof i == 'number';
             }
          );
-    },
-    suchthatmaybe: function() {
-        var suchthattype = function() {
-            return SUCHTHATMAYBE(integer(),
-                function(i) {
-                    return i == "";
-                }
-            );
-        };
-        return FORALL(suchthattype(),
-            function(i) {
-                return typeof i == 'number';
-            }
-         );
     }
+    //suchthatmaybe: function() {
+    //    var suchthattype = function() {
+    //        return SUCHTHATMAYBE(integer(),
+    //            function(i) {
+    //                return i == "";
+    //            }
+    //        );
+    //    };
+    //    return FORALL(suchthattype(),
+    //        function(i) {
+    //            return typeof i == 'number';
+    //        }
+    //     );
+    //}
 };

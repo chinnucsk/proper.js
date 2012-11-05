@@ -114,12 +114,6 @@ function even_number() {
 The example of `even_number()` using a LET is prefered over this example
 since it does not throw away any generated values.
 
-### `SUCHTHATMAYBE(type(), function(v) { return $boolean() })`
-
-The same as `SUCHTHAT` except that if the number of attempts to generate
-a valid value is exhausted a value will still be generated, regardless
-of whether it satisfies the condition.
-
 ### `oneof(type(), type(), ...)` `oneof(array(type()))`
 
 Returns a randomly selection member of its arguments or the first

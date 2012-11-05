@@ -74,16 +74,16 @@ prop(JS, Module, PropName) ->
   io:format("property ~s~n", [NS]),
   qc(JS, Module, NS, Prop).
 
+-ifdef(EQC).
+qc(JS, Module, NS, Prop) ->
+  eqc:quickcheck(on_output(fun js_on_output/2, prop1(JS, Module, NS, Prop))).
+-else.
 num_tests() ->
   case application:get_env(properjs, num_tests) of
     {ok, N} -> N;
     _ -> 100
   end.
 
--ifdef(EQC).
-qc(JS, Module, NS, Prop) ->
-  eqc:quickcheck(on_output(fun js_on_output/2, prop1(JS, Module, NS, Prop))).
--else.
 qc(JS, Module, NS, Prop) ->
   Opts = [{on_output, fun js_on_output/2},num_tests()],
   proper:quickcheck(prop1(JS, Module, NS, Prop), Opts).
@@ -99,16 +99,16 @@ prop1(JS, Module, NS0, {struct, [{<<"SUCHTHAT">>, [Props0, _]}]}) ->
         prop1(JS, Module, NS, Prop)
     end
   );
-prop1(JS, Module, NS0, {struct, [{<<"SUCHTHATMAYBE">>, [Props0, _]}]}) ->
-  Props = prop1(JS, Module, <<NS0/binary, ".SUCHTHATMAYBE[0]">>, Props0),
-  ?SUCHTHATMAYBE(Args, Props,
-    begin
-        F = <<NS0/binary, ".SUCHTHATMAYBE[1]">>,
-        {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F,Args]),
-        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
-        prop1(JS, Module, NS, Prop)
-    end
-  );
+%prop1(JS, Module, NS0, {struct, [{<<"SUCHTHATMAYBE">>, [Props0, _]}]}) ->
+%  Props = prop1(JS, Module, <<NS0/binary, ".SUCHTHATMAYBE[0]">>, Props0),
+%  ?SUCHTHATMAYBE(Args, Props,
+%    begin
+%        F = <<NS0/binary, ".SUCHTHATMAYBE[1]">>,
+%        {ok, [Index, Prop]} = js_call(JS, <<"Proper.call">>, [F,Args]),
+%        NS = iolist_to_binary(["Proper.value(", integer_to_list(Index),")"]),
+%        prop1(JS, Module, NS, Prop)
+%    end
+%  );
 
 prop1(JS, Module, NS0, {struct, [{<<"FORALL">>, [Props0, _]}]}) ->
   Props = props_list(JS, Module, <<NS0/binary, ".FORALL[0]">>, Props0),
@@ -284,5 +284,15 @@ neg_integer() ->
   ?SUCHTHAT(N, integer(), N < 0).
 
 string() -> list(char()).
+
+float() -> real().
+
+float(A, B) ->
+  ?LET(F, float(),
+    if
+      F < 0.5 -> ((1-F) * (B-A) + A);
+      true -> (F * (B-A) + A)
+    end
+  ).
 
 -endif.
