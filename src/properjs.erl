@@ -51,15 +51,18 @@ main(L) ->
 exitcode(true) -> 0;
 exitcode(false) -> 1.
 
-priv_dir() ->
+lib_dir(SubDir) ->
   %% Hacky workaround to handle running from a standard app directory
   %% and .ez package
-  case code:priv_dir(properjs) of
+  case code:lib_dir(properjs, SubDir) of
     {error, bad_name} ->
-      filename:join([filename:dirname(code:which(?MODULE)), "..", "priv"]);
+      filename:join([filename:dirname(code:which(?MODULE)), "..", atom_to_list(SubDir)]);
     Dir ->
       Dir
   end.
+
+priv_dir() ->
+  lib_dir(priv).
 
 js_on_output(Format, [Data]) when Format =:= "~w~n"; Format =:= "~p~n" ->
   io:format("~s~n", [js_mochijson2:encode(Data)]);
@@ -211,7 +214,7 @@ js(L) ->
   {ok, ProperBinary} = file:read_file(FileName),
   StringFileName = filename:join([priv_dir(), "string.js"]),
   {ok, StringBinary} = file:read_file(StringFileName),
-  AssertFileName = filename:join(["deps", "assert.js", "assert.js"]),
+  AssertFileName = filename:join([lib_dir(deps), "assert.js", "assert.js"]),
   {ok, AssertBinary} = file:read_file(AssertFileName),
 
   Pid = spawn(fun() ->
