@@ -1,5 +1,7 @@
 # Property testing in Javascript
 
+[![Build Status](https://secure.travis-ci.org/mokele/proper.js.png)](http://travis-ci.org/mokele/proper.js)
+
 ## Make
 
     make
