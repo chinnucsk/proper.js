@@ -10,7 +10,7 @@
         margin: 0 auto 4em auto;
         width: 700px;
     }
-    p {
+    p, li {
         line-height: 1.4;
     }
     .desc p {
@@ -80,8 +80,8 @@
     .shell pre .class {
         color: #0f0;
     }
-    .shell pre .proper {
-        color: pink;
+    .shell pre .test {
+        color: yellow;
     }
     </style>
   </head>
@@ -94,6 +94,58 @@
 
   <table>
     <tbody>
+      <tr>
+        <td colspan="2"><h3>Getting Started</h3></td>
+      </tr>
+      <tr>
+        <td class="desc">
+          <p>Given that there is no built in string reverse function, lets write one.</p>
+          <p>Because the results of reversing a reversed string is the original string, we can assert
+          that exact property for reversing all strings.</p>
+          <p>A list of supported generators is in the
+          <a href="https://github.com/mokele/proper.js#supported-typesgeneratorsproperties">README</a>. Have fun!</p>
+        </td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span> cat string.js
+            <pre><span class="class">String</span>.<span class="kw">prototype</span>.reverse = <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="kw">this</span>.split("").reverse().join("");
+};
+<span class="class">String</span>.props = {
+    reverse: <span class="kw">function</span>() {
+        <span class="kw">return</span> <span class="test">FORALL(string(),</span>
+            <span class="kw">function</span>(s) {
+                <span class="test">assert.equal(</span>s, s.reverse().reverse()<span class="test">)</span>;
+            }
+        <span class="test">)</span>;
+    }
+};</pre>
+            <br />
+            <span class="dollar">$</span> pjs string.js String
+            <br />
+            property String.props.reverse()
+            <br />
+            ..................................................
+            <br />
+            ..................................................
+            <br />
+            OK: Passed 100 test(s).
+            </li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><h3>Further Reading</h3></td>
+      </tr>
+      <tr>
+        <td colspan="2" class="desc">
+          <ul>
+            <li><a href="https://github.com/mokele/proper.js">proper.js on GitHub</a></li>
+            <li><a href="https://github.com/mokele/proper.js#supported-typesgeneratorsproperties">Supported types/generators</a> from README.md</li>
+            <li><a href="http://mokele.co.uk/2012/10/30/property-testing-javascript-go-match-variations.html">Property testing javascript Go match variations</a> an article using proper.js</li>
+          </ul>
+        </td>
+      </tr>
       <tr>
         <td colspan="2"><h3>Install</h3></td>
       </tr>
@@ -128,6 +180,15 @@
           </ol>
         </td>
       </tr>
+      <tr>
+        <td class="desc"><p>Through a oneliner with QuviQ QuickCheck support.</p></td>
+        <td class="shell">
+          <ol>
+            <li><span class="dollar">$</span>
+            curl https://raw.github.com/mokele/proper.js/go-eqc | sh
+          </ol>
+        </td>
+      </tr>
       <tr><td colspan="2"><hr /></td></tr>
       <tr>
         <td class="desc"><p>Manually</p></td>
@@ -142,52 +203,15 @@
         </td>
       </tr>
       <tr>
-        <td colspan="2"><h3>Getting Started</h3></td>
-      </tr>
-      <tr>
-        <td class="desc">
-          <p>Given that there is no built in string reverse function, lets write one.</p>
-          <p>Because the results of reversing a reversed string is the original string, we can assert
-          that exact property for reversing all strings.</p>
-          <p>A list of supported generators is in the
-          <a href="https://github.com/mokele/proper.js#supported-typesgeneratorsproperties">README</a>. Have fun!</p>
-        </td>
+        <td class="desc"><p>Alternative <code>make</code> line for QuviQ QuickCheck support.</p></td>
         <td class="shell">
           <ol>
-            <li><span class="dollar">$</span> cat string.js
-            <pre><span class="class">String</span>.<span class="kw">prototype</span>.reverse = <span class="kw">function</span>() {
-    <span class="kw">return</span> <span class="kw">this</span>.split("").reverse().join("");
-};
-<span class="class">String</span>.props = {
-    reverse: <span class="kw">function</span>() {
-        <span class="kw">return</span> <span class="proper">FORALL(</span>string(),
-            <span class="kw">function</span>(s) {
-                assert.equal(s, s.reverse().reverse());
-            }<span class="proper">)</span>;
-    }
-};</pre>
-            <br />
-            <span class="dollar">$</span> pjs string.js String
-            <br />
-            property String.props.reverse()
-            <br />
-            ..................................................
-            <br />
-            ..................................................
-            <br />
-            OK: Passed 100 test(s).
-            </li>
+            <li><span class="dollar">$</span> make all cleanebin compile_eqc</li>
           </ol>
         </td>
       </tr>
     </tbody>
   </table>
-
-  <h3>Further Reading</h3>
-  <ul>
-    <li><a href="https://github.com/mokele/proper.js">proper.js on GitHub</a></li>
-    <li><a href="http://mokele.co.uk/2012/10/30/property-testing-javascript-go-match-variations.html">Property testing javascript Go match variations</a> an article using proper.js</li>
-  </ul>
 
   </body>
 </html>
