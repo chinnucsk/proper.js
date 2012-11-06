@@ -2,5 +2,6 @@ cd /usr/local/ && \
   git clone https://github.com/mokele/proper.js pjs && \
   (cd pjs && \
     make && \
+    make cleanebin compile_eqc && \
     ln -s /usr/local/pjs/properjs /usr/local/bin/pjs \
   )
