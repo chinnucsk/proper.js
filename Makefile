@@ -26,4 +26,3 @@ test:
 		priv/proper.js Proper \
 		priv/string.js String \
 		priv/array.js Array
-
