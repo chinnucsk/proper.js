@@ -5,4 +5,5 @@ main(L) ->
   true = code:add_pathz(filename:join(Dir, "ebin")),
   true = code:add_pathz(filename:join([Dir, "deps", "erlang_js", "ebin"])),
   true = code:add_pathz(filename:join([Dir, "deps", "proper", "ebin"])),
+  true = code:add_pathz(filename:join([Dir, "deps", "getopt", "ebin"])),
   properjs:main(L).

@@ -23,7 +23,14 @@ start_qc() ->
   ok = application:start(properjs).
 -endif.
 
+opts() -> [
+    %{path, "p", "path", {string, ".:test"}, "Path to find .js files separated with :s e.g. \".:lib\""}
+  ].
+
+main([]) -> getopt:usage(opts(), "pjs");
 main(L) ->
+  {ok, _Opts} = getopt:parse(opts(), L),
+
   start(),
   {ok, JS, ObjectsToTest} = js(L),
   Success =
@@ -211,17 +218,14 @@ props_list(JS, Module, NS0, Props) ->
 
 js(L) ->
   FileName = filename:join([priv_dir(), "proper.js"]),
-  {ok, ProperBinary} = file:read_file(FileName),
   StringFileName = filename:join([priv_dir(), "string.js"]),
-  {ok, StringBinary} = file:read_file(StringFileName),
   AssertFileName = filename:join([lib_dir(deps), "assert.js", "assert.js"]),
-  {ok, AssertBinary} = file:read_file(AssertFileName),
 
   Pid = spawn(fun() ->
       {ok, JS} = js_driver:new(),
-      js:define(JS, ProperBinary),
-      js:define(JS, StringBinary),
-      js:define(JS, AssertBinary),
+      js_driver:define_js(JS, {file, FileName}),
+      js_driver:define_js(JS, {file, StringFileName}),
+      js_driver:define_js(JS, {file, AssertFileName}),
       {file, _} =
         lists:foldl(
           fun

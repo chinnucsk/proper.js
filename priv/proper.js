@@ -8,6 +8,29 @@ var console = {
     }
 }
 
+var require = function(name) {
+    var exts = ['', '.js', '.json', '.node'];
+    for(var i=0; i<exts.length; i++) {
+        var paths = name.substr(0, 1) == '/'
+            ? ['']
+            : require.paths;
+        for(var j=0; j<paths.length; j++) {
+            // todo: fs specific delim
+            var path = paths[j];
+            if(path.length > 0) {
+                path += '/';
+            }
+            var filename = path + name + exts[i];
+            var r = proper_require(filename);
+            if(r !== false) {
+                return r;
+            }
+        }
+    }
+    return false;
+};
+require.paths = ['node_modules', ''];
+
 function clone(obj) {
     // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;

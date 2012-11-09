@@ -1,3 +1,7 @@
+
+var r = require("priv/array");
+console.log("r", r);
+
 String.prototype.reverse = function() {
     return this.split("").reverse().join("");
 };
@@ -22,7 +26,7 @@ String.props = {
         return FORALL(array(char_code()),
             function(charlist) {
                 var s = String.fromCharCodes(charlist);
-                //assert.equal(typeof s, 'string');
+                assert.equal(typeof s, 'string');
                 var converted = s.toCharCodes();
                 for(var i=0; i<charlist.length; i++) {
                     assert.equal(charlist[i], converted[i]);
