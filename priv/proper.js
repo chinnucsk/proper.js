@@ -9,6 +9,8 @@ var console = {
 }
 
 var require = function(name) {
+    // todo: implement from
+    // http://nodejs.org/api/modules.html#modules_all_together
     var exts = ['', '.js', '.json', '.node'];
     for(var i=0; i<exts.length; i++) {
         var paths = name.substr(0, 1) == '/'
@@ -30,6 +32,12 @@ var require = function(name) {
     return false;
 };
 require.paths = ['node_modules', ''];
+for(var i=0; i<proper_paths.length; i++) {
+    require.paths.push(proper_paths[i]);
+}
+
+require('deps/assert.js/assert');
+require('priv/string');
 
 function clone(obj) {
     // Handle the 3 simple types, and null or undefined

@@ -218,14 +218,11 @@ props_list(JS, Module, NS0, Props) ->
 
 js(L) ->
   FileName = filename:join([priv_dir(), "proper.js"]),
-  StringFileName = filename:join([priv_dir(), "string.js"]),
-  AssertFileName = filename:join([lib_dir(deps), "assert.js", "assert.js"]),
-
   Pid = spawn(fun() ->
       {ok, JS} = js_driver:new(),
+      Paths = [lib_dir('.')],
+      {ok, _} = js:eval(JS, list_to_binary(io_lib:format("proper_paths = ~p;", [Paths]))),
       js_driver:define_js(JS, {file, FileName}),
-      js_driver:define_js(JS, {file, StringFileName}),
-      js_driver:define_js(JS, {file, AssertFileName}),
       {file, _} =
         lists:foldl(
           fun

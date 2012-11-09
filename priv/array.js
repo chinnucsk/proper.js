@@ -1,4 +1,3 @@
-
 // http://stackoverflow.com/a/3955096/1562641
 Array.prototype.remove = function() {
     var what, a = arguments, L = a.length, ax;

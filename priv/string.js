@@ -1,7 +1,3 @@
-
-var r = require("priv/array");
-console.log("r", r);
-
 String.prototype.reverse = function() {
     return this.split("").reverse().join("");
 };
